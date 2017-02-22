@@ -34,7 +34,11 @@ public class Application {
             e.printStackTrace();
         }
 
+
         int[][] matrix = null;
+        double numbersFromFile = 0;
+        int numberOfCharacters = 0;
+        int numberOfSheeps = 0;
 
         try {
             //Finding the size of matrice
@@ -47,6 +51,7 @@ public class Application {
                 characters += line.length();
             }
 
+
             //Marimea matricii
             System.out.println();
             if (characters % lines == 0){
@@ -54,16 +59,59 @@ public class Application {
 
                 //Reading into the matrice
                 matrix = new int[lines][characters /lines];
+
                 int indexLine = 0;
 
                 while (input2.hasNextLine()) {
                     String[] linesFromFile = input2.nextLine().split("\\s");
-                    System.out.println();
                     for (int index = 0; index < linesFromFile.length; index++) {
 
-                        matrix[indexLine][index] = Integer.parseInt(linesFromFile[index]);
+                        if (linesFromFile[index].matches("[0-9]+")) {
+                            numbersFromFile = Double.parseDouble(linesFromFile[index]);
+                            if (numbersFromFile > Integer.MAX_VALUE){
+                                System.out.println("Your matrix contains a number that is to big. Please change it.");
+                                return null;
+                            }
+                            if (numbersFromFile != 1 && numbersFromFile != 2 && numbersFromFile != 3
+                            && numbersFromFile != 0) {
+                                System.out.println("Unknown object " + numbersFromFile + "\n" +
+                                        "Please change it to 1, 2, 3 or 0");
+                                return null;
+                            }
+                            matrix[indexLine][index] = Integer.parseInt(linesFromFile[index]);
+                        }
+                        else {
+                            System.out.println("Please enter only numbers.");
+                            return null;
+                        }
                     }
                     indexLine++;
+                }
+
+
+
+                for (int index = 0; index < matrix.length; index++){
+                    for (int index2 = 0; index2 < matrix.length; index2++){
+                        if (matrix[index][index2] == 1)
+                            numberOfCharacters++;
+                        if (matrix[index][index2] == 2)
+                            numberOfSheeps++;
+
+                    }
+                }
+                if (numberOfCharacters > 1){
+                    System.out.println("Please initialise no more then one character.");
+                    return null;
+                }
+                if (numberOfSheeps > 1){
+                    System.out.println("Please initialise no more then one sheep.");
+                    return null;
+                }
+                for (int index = 0; index < matrix.length; index++){
+                    System.out.println();
+                    for (int index2 = 0; index2 < matrix.length; index2++){
+                        System.out.print(matrix[index][index2] + " ");
+                    }
                 }
             }
             else {
