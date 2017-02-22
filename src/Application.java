@@ -1,12 +1,5 @@
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import sun.rmi.runtime.Log;
-
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.sql.SQLSyntaxErrorException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -15,6 +8,18 @@ import java.util.Scanner;
 public class Application {
 
     private void MinecratTest(){
+        //declaring the objects in the game
+        int character  = 1;
+        int sheep = 2;
+        int obstacle = 3;
+        int clearPath = 0;
+
+        matrix();
+
+
+    }
+
+    private int[][] matrix(){
         Scanner input = null;
         try {
             input = new Scanner(new FileReader("/Users/lorand/IntellijProjects/MinecraftGame/Map1.txt"));
@@ -22,43 +27,53 @@ public class Application {
             e.printStackTrace();
         }
 
-
-        BufferedReader readLine = null;
-        ArrayList<ArrayList> list2 = new ArrayList<ArrayList>();
-        String line = "";
-        int numbers = 0;
-
-
-        //Reading the lines
+        Scanner input2 = null;
         try {
+            input2 = new Scanner(new FileReader("/Users/lorand/IntellijProjects/MinecraftGame/Map1.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
-            while (input.hasNext()) {
-                String[] linesFromFile = input.nextLine().split("\\s");
-                ArrayList<Integer> list = new ArrayList<Integer>();
+        int[][] matrix = null;
 
-                for (int index = 0; index < linesFromFile.length; index++) {
-                    list.add(Integer.parseInt(linesFromFile[index]));
-                }
-                list2.add(list);
+        try {
+            //Finding the size of matrice
+            int lines = 0;
+            int characters = 0;
+
+            while (input.hasNextLine()){
+                lines++;
+                String line = input.nextLine().replaceAll("\\s","");
+                characters += line.length();
             }
 
+            //Marimea matricii
+            System.out.println();
+            if (characters % lines == 0){
+                System.out.format("The size of the matrice is = %d x %d \n", characters / lines,lines);
+
+                //Reading into the matrice
+                matrix = new int[lines][characters /lines];
+                int indexLine = 0;
+
+                while (input2.hasNextLine()) {
+                    String[] linesFromFile = input2.nextLine().split("\\s");
+                    System.out.println();
+                    for (int index = 0; index < linesFromFile.length; index++) {
+
+                        matrix[indexLine][index] = Integer.parseInt(linesFromFile[index]);
+                    }
+                    indexLine++;
+                }
+            }
+            else {
+                System.out.println("The matrice is not composed of equal number of lines and columns.");
+            }
         } catch (NumberFormatException e) {
             System.out.println("FORMATUL");
         }
-
-
-        for (int index = 0; index < list2.size();index++)
-        {
-            System.out.println(index+" "+list2.get(index));
-
-            ArrayList<Integer> numbersFromList = (ArrayList<Integer>)list2.get(index);
-            for (int index2 = 0; index2 < numbersFromList.size();index2++){
-
-            }
-            System.out.println();
-        }
+        return matrix;
     }
-
 
     public static void main(String[] args){
         Application application = new Application();
