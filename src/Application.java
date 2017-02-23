@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.applet.Applet;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
@@ -5,7 +7,7 @@ import java.util.Scanner;
 /**
  * Created by lorand on 21/02/2017.
  */
-public class Application {
+public class Application{
 
     private void MinecratTest(){
         //declaring the objects in the game
@@ -14,7 +16,7 @@ public class Application {
         int obstacle = 3;
         int clearPath = 0;
 
-        matrix();
+        //matrix();
 
 
     }
@@ -123,8 +125,18 @@ public class Application {
         return matrix;
     }
 
+
     public static void main(String[] args){
         Application application = new Application();
-        application.MinecratTest();
+        //application.MinecratTest();
+
+        JFrame frame = new JFrame();
+
+        KeyListenerTest keyListenerTest = new KeyListenerTest();
+        frame.add(keyListenerTest);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+
     }
 }
