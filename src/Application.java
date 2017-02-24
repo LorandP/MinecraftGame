@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.applet.Applet;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
@@ -21,7 +24,7 @@ public class Application{
 
     }
 
-    private int[][] matrix(){
+    public int[][] matrix(){
         Scanner input = null;
         try {
             input = new Scanner(new FileReader("/Users/lorand/IntellijProjects/MinecraftGame/Map1.txt"));
@@ -131,11 +134,13 @@ public class Application{
         //application.MinecratTest();
 
         JFrame frame = new JFrame();
-
-        KeyListenerTest keyListenerTest = new KeyListenerTest();
+        KeyListenerTest keyListenerTest = new KeyListenerTest(5,5);
         frame.add(keyListenerTest);
+        frame.pack();
         frame.setVisible(true);
+        frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         frame.setSize(800, 600);
 
     }
