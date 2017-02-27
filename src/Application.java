@@ -1,16 +1,25 @@
+import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
+import jdk.internal.util.xml.impl.Pair;
 import javax.swing.*;
+import javax.swing.text.Position;
 import java.applet.Applet;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
+
 
 /**
  * Created by lorand on 21/02/2017.
  */
 public class Application{
+    private int[][] copyOfOriginalMatrix;
 
     private void MinecratTest(){
         //declaring the objects in the game
@@ -19,8 +28,8 @@ public class Application{
         int obstacle = 3;
         int clearPath = 0;
 
-        //matrix();
-
+       // matrix();
+        movement(matrix());
 
     }
 
@@ -43,7 +52,14 @@ public class Application{
         int[][] matrix = null;
         double numbersFromFile = 0;
         int numberOfCharacters = 0;
-        int numberOfSheeps = 0;
+        int characterLinePosition = 0;
+        int characterColPosition = 0;
+        int numSheeps = 0;
+        int arrayIndex = 0;
+
+
+       // PositionPair<Integer,Integer> sheepPosition;
+
 
         try {
             //Finding the size of matrice
@@ -83,6 +99,7 @@ public class Application{
                                         "Please change it to 1, 2, 3 or 0");
                                 return null;
                             }
+
                             matrix[indexLine][index] = Integer.parseInt(linesFromFile[index]);
                         }
                         else {
@@ -93,31 +110,26 @@ public class Application{
                     indexLine++;
                 }
 
-
-
-                for (int index = 0; index < matrix.length; index++){
-                    for (int index2 = 0; index2 < matrix.length; index2++){
-                        if (matrix[index][index2] == 1)
+                for (int lineIndex = 0; lineIndex < matrix.length; lineIndex++){
+                    for (int colIndex = 0; colIndex < matrix.length; colIndex++){
+                        if (matrix[lineIndex][colIndex] == 1) {
                             numberOfCharacters++;
-                        if (matrix[index][index2] == 2)
-                            numberOfSheeps++;
-
+                        }
                     }
                 }
                 if (numberOfCharacters > 1){
                     System.out.println("Please initialise no more then one character.");
                     return null;
                 }
-                if (numberOfSheeps > 1){
-                    System.out.println("Please initialise no more then one sheep.");
-                    return null;
-                }
-                for (int index = 0; index < matrix.length; index++){
+
+                //Afisez matricea
+                for (int lineIndex = 0; lineIndex < matrix.length; lineIndex++){
                     System.out.println();
-                    for (int index2 = 0; index2 < matrix.length; index2++){
-                        System.out.print(matrix[index][index2] + " ");
+                    for (int colIndex = 0; colIndex < matrix.length; colIndex++){
+                        System.out.print(matrix[lineIndex][colIndex] + " ");
                     }
                 }
+                System.out.println();
             }
             else {
                 System.out.println("The matrice is not composed of equal number of lines and columns.");
@@ -125,17 +137,88 @@ public class Application{
         } catch (NumberFormatException e) {
             System.out.println("FORMATUL");
         }
+        //System.out.println("move");
+        //movment(matrix);
+        //System.out.println("move");
         return matrix;
     }
+    /*
+    public int[][] getMatrix(){
+        return this.copyOfOriginalMatrix;
+    }
+    public void setMatrix(int[][] matrix){
+        copyOfOriginalMatrix = matrix;
+    }
+*/
+
+    private void movement(int[][] matrix)
+    {
+        ArrowKeys moveCharacter = new ArrowKeys();
+        moveCharacter.setMatrix(matrix());
 
 
+    }
+/*
+    public PositionPair positionOfCharacter(){
+        int charLinePos = 0;
+        int charColPos = 0;
+
+
+        for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length; lineIndex++){
+            for (int colIndex = 0; colIndex < copyOfOriginalMatrix.length; colIndex++){
+                if (copyOfOriginalMatrix[lineIndex][colIndex] == 1) {
+                    charLinePos = lineIndex;
+                    charColPos = colIndex;
+                }
+
+            }
+        }
+        return new PositionPair(charLinePos, charColPos);
+    }
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        PositionPair charPosition = positionOfCharacter();
+
+
+        if (e.getKeyCode() == KeyEvent.VK_UP){
+            for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length;lineIndex++){
+                for (int colIndex = 0; colIndex < copyOfOriginalMatrix.length;colIndex++){
+                    if (copyOfOriginalMatrix[lineIndex][colIndex] == 1){
+                        if (copyOfOriginalMatrix[lineIndex - 1][colIndex] >= 0){
+                            copyOfOriginalMatrix[lineIndex - 1][colIndex] = 1;
+                            copyOfOriginalMatrix[lineIndex][colIndex] = 0;
+                        }
+                    }
+                }
+            }
+        }
+        if (e.getKeyCode() ==KeyEvent.VK_DOWN))
+            ///yAxis += 10;
+        if (e.getKeyCode() ==KeyEvent.VK_LEFT))
+            //xAxis -= 10;
+        if (e.getKeyCode() ==KeyEvent.VK_RIGHT))
+           // xAxis += 10;
+
+        displayTheMatrix(copyOfOriginalMatrix);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+*/
     public static void main(String[] args){
         Application application = new Application();
-        //application.MinecratTest();
+        application.MinecratTest();
+        ArrowKeys da = new ArrowKeys();
 
         JFrame frame = new JFrame();
-        KeyListenerTest keyListenerTest = new KeyListenerTest(5,5);
-        frame.add(keyListenerTest);
+        frame.add(da);
         frame.pack();
         frame.setVisible(true);
         frame.setResizable(false);
@@ -144,4 +227,7 @@ public class Application{
         frame.setSize(800, 600);
 
     }
+
+
+
 }
