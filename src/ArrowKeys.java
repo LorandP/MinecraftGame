@@ -27,9 +27,10 @@ public class ArrowKeys extends JPanel implements KeyListener {
     public int[][] getMatrix(){
         return this.copyOfOriginalMatrix;
     }
-    public void setMatrix(int[][] matrix){
-        copyOfOriginalMatrix = matrix;
+    public void setMatrix(int[][] copyOfOriginalMatrix){
+        this.copyOfOriginalMatrix = copyOfOriginalMatrix;
     }
+
 
     public PositionPair positionOfCharacter(){
         int charLinePos = 0;
@@ -45,6 +46,7 @@ public class ArrowKeys extends JPanel implements KeyListener {
         }
         return new PositionPair(charLinePos, charColPos);
     }
+
 
     private int[] sheepPosition(){
         int numSheeps = 0;
@@ -79,6 +81,7 @@ public class ArrowKeys extends JPanel implements KeyListener {
                 keysDown.add(new Integer(e.getKeyCode()));
             }
         }*/
+
         PositionPair charPosition = positionOfCharacter();
 
 

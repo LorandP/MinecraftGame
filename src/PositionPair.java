@@ -1,26 +1,28 @@
 /**
  * Created by Hermes on 27/02/2017.
  */
-class PositionPair<Line, Col> {
-    private Line line;
-    private Col col;
+class PositionPair {
+    private int line;
+    private int column;
 
-    public PositionPair(Line line, Col col){
-        this.col = col;
+    public PositionPair(int line, int column) {
         this.line = line;
+        this.column = column;
     }
-    public Line getLine()
-    {
+
+    public int getLine() {
         return line;
     }
-    public Col getCol()
-    {
-        return col;
-    }
-    public void setLine(Line line){
+
+    public void setLine(int line) {
         this.line = line;
     }
-    public void setCol(Col col){
-        this.col = col;
+
+    public int getColumn() {
+        return column;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
     }
 }

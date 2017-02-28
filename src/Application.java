@@ -1,5 +1,7 @@
 import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
 import jdk.internal.util.xml.impl.Pair;
+import oracle.jvm.hotspot.jfr.JFR;
+
 import javax.swing.*;
 import javax.swing.text.Position;
 import java.applet.Applet;
@@ -18,18 +20,115 @@ import java.util.Scanner;
 /**
  * Created by lorand on 21/02/2017.
  */
-public class Application{
+public class Application {
     private int[][] copyOfOriginalMatrix;
 
-    private void MinecratTest(){
-        //declaring the objects in the game
-        int character  = 1;
-        int sheep = 2;
-        int obstacle = 3;
-        int clearPath = 0;
 
-       // matrix();
-        movement(matrix());
+    private void MinecratTest(){
+        copyOfOriginalMatrix = matrix();
+
+        JPanel panel = new JPanel();
+        JFrame frame = new JFrame();
+
+        panel.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //PositionPair charPosition = positionOfCharacter();
+
+
+                if (e.getKeyCode() == KeyEvent.VK_UP){
+                    for (int lineIndex = 1; lineIndex < copyOfOriginalMatrix.length;lineIndex++){
+                        for (int colIndex = 0; colIndex < copyOfOriginalMatrix.length;colIndex++){
+                            if (copyOfOriginalMatrix[lineIndex][colIndex] == 1 &&
+                                    copyOfOriginalMatrix[lineIndex - 1][colIndex] != 3 &&
+                                    copyOfOriginalMatrix[lineIndex - 1][colIndex] != 2) {
+                                    copyOfOriginalMatrix[lineIndex - 1][colIndex] = 1;
+                                    copyOfOriginalMatrix[lineIndex][colIndex] = 0;
+                                }
+                                if (copyOfOriginalMatrix[lineIndex][colIndex] == 1 &&
+                                        copyOfOriginalMatrix[lineIndex - 1][colIndex] == 2){
+                                    System.out.println("You have found the sheep!");
+                                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                                }
+                            }
+                        }
+                    }
+
+                if (e.getKeyCode() == KeyEvent.VK_DOWN){
+                    for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length - 1;lineIndex++){
+                        for (int colIndex = 0; colIndex < copyOfOriginalMatrix.length;colIndex++){
+                            if (copyOfOriginalMatrix[lineIndex][colIndex] == 1 &&
+                                    copyOfOriginalMatrix[lineIndex + 1][colIndex] != 3 &&
+                                    copyOfOriginalMatrix[lineIndex + 1][colIndex] != 2){
+                                    copyOfOriginalMatrix[lineIndex + 1][colIndex] = 1;
+                                    copyOfOriginalMatrix[lineIndex][colIndex] = 0;
+                                    break;
+                                }
+                            if (copyOfOriginalMatrix[lineIndex][colIndex] == 1 &&
+                                    copyOfOriginalMatrix[lineIndex + 1][colIndex] == 2){
+                                System.out.println("You have found the sheep!");
+                               // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                            }
+                            }
+                        }
+                    }
+
+                if (e.getKeyCode() == KeyEvent.VK_LEFT){
+                    for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length;lineIndex++){
+                        for (int colIndex = 1; colIndex < copyOfOriginalMatrix.length;colIndex++){
+                            if (copyOfOriginalMatrix[lineIndex][colIndex] == 1 &&
+                                    copyOfOriginalMatrix[lineIndex][colIndex - 1] != 3 &&
+                                    copyOfOriginalMatrix[lineIndex][colIndex - 1] != 2){
+                                    copyOfOriginalMatrix[lineIndex][colIndex - 1] = 1;
+                                    copyOfOriginalMatrix[lineIndex][colIndex] = 0;
+                                }
+                            if (copyOfOriginalMatrix[lineIndex][colIndex] == 1 &&
+                                    copyOfOriginalMatrix[lineIndex][colIndex - 1] == 2){
+                                System.out.println("You have found the sheep!");
+                               // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                            }
+                            }
+                        }
+                    }
+
+                if (e.getKeyCode() == KeyEvent.VK_RIGHT){
+                    for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length;lineIndex++){
+                        for (int colIndex = 0; colIndex < copyOfOriginalMatrix.length - 1;colIndex++){
+                            if (copyOfOriginalMatrix[lineIndex][colIndex] == 1 &&
+                                    copyOfOriginalMatrix[lineIndex][colIndex + 1] != 3 &&
+                                    copyOfOriginalMatrix[lineIndex][colIndex + 1] != 2){
+                                    copyOfOriginalMatrix[lineIndex][colIndex + 1] = 1;
+                                    copyOfOriginalMatrix[lineIndex][colIndex] = 0;
+                                    break;
+                                }
+                            if (copyOfOriginalMatrix[lineIndex][colIndex] == 1 &&
+                                    copyOfOriginalMatrix[lineIndex][colIndex + 1] == 2){
+                                System.out.println("You have found the sheep!");
+                               // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                            }
+                            }
+                        }
+                    }
+
+
+                displayTheMatrix(copyOfOriginalMatrix);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) { }
+            @Override
+            public void keyTyped(KeyEvent e) { }
+        });
+
+        panel.setFocusable(true);
+        panel.requestFocusInWindow();
+        frame.add(panel);
+        frame.setVisible(true);
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+
 
     }
 
@@ -60,8 +159,6 @@ public class Application{
 
        // PositionPair<Integer,Integer> sheepPosition;
 
-
-        try {
             //Finding the size of matrice
             int lines = 0;
             int characters = 0;
@@ -134,31 +231,12 @@ public class Application{
             else {
                 System.out.println("The matrice is not composed of equal number of lines and columns.");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("FORMATUL");
-        }
-        //System.out.println("move");
-        //movment(matrix);
-        //System.out.println("move");
+
+
         return matrix;
     }
-    /*
-    public int[][] getMatrix(){
-        return this.copyOfOriginalMatrix;
-    }
-    public void setMatrix(int[][] matrix){
-        copyOfOriginalMatrix = matrix;
-    }
-*/
-
-    private void movement(int[][] matrix)
-    {
-        ArrowKeys moveCharacter = new ArrowKeys();
-        moveCharacter.setMatrix(matrix());
 
 
-    }
-/*
     public PositionPair positionOfCharacter(){
         int charLinePos = 0;
         int charColPos = 0;
@@ -175,56 +253,24 @@ public class Application{
         }
         return new PositionPair(charLinePos, charColPos);
     }
-    @Override
-    public void keyTyped(KeyEvent e) {
 
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        PositionPair charPosition = positionOfCharacter();
-
-
-        if (e.getKeyCode() == KeyEvent.VK_UP){
-            for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length;lineIndex++){
-                for (int colIndex = 0; colIndex < copyOfOriginalMatrix.length;colIndex++){
-                    if (copyOfOriginalMatrix[lineIndex][colIndex] == 1){
-                        if (copyOfOriginalMatrix[lineIndex - 1][colIndex] >= 0){
-                            copyOfOriginalMatrix[lineIndex - 1][colIndex] = 1;
-                            copyOfOriginalMatrix[lineIndex][colIndex] = 0;
-                        }
-                    }
-                }
+    private void displayTheMatrix(int[][] matrix){
+        System.out.println();
+        for (int lineIndex = 0; lineIndex < matrix.length;lineIndex++){
+            System.out.println();
+            for (int colIndex = 0; colIndex < matrix.length;colIndex++){
+                System.out.print(matrix[lineIndex][colIndex] + " ");
             }
         }
-        if (e.getKeyCode() ==KeyEvent.VK_DOWN))
-            ///yAxis += 10;
-        if (e.getKeyCode() ==KeyEvent.VK_LEFT))
-            //xAxis -= 10;
-        if (e.getKeyCode() ==KeyEvent.VK_RIGHT))
-           // xAxis += 10;
-
-        displayTheMatrix(copyOfOriginalMatrix);
+        System.out.println();
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
-*/
     public static void main(String[] args){
         Application application = new Application();
         application.MinecratTest();
-        ArrowKeys da = new ArrowKeys();
 
-        JFrame frame = new JFrame();
-        frame.add(da);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.setSize(800, 600);
+
 
     }
 
