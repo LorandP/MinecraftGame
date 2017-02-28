@@ -122,7 +122,6 @@ public class Application {
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setState(Frame.ICONIFIED);
         frame.setSize(100, 100);
 
         if (copyOfOriginalMatrix == null) {
