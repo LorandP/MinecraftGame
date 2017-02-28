@@ -21,9 +21,17 @@ import java.util.Scanner;
 public class Application {
     private int[][] copyOfOriginalMatrix;
 
+    /**
+     * This method is used to initialise copyOfOriginalMatrix with a 2dArray that has all the numbers stored into it
+     * that was read from a file.
+     * After that, this method listens for user input keys. Only the arrow keys are registered.
+     * If an arrow key is registered then the appropriate actions are taken, like moving the number 1 in different locations
+     * in the matrix depending upon what arrow key was pressed.
+     */
 
     private void MinecratTest() {
         copyOfOriginalMatrix = matrix();
+
         JPanel panel = new JPanel();
         JFrame frame = new JFrame();
 
@@ -103,12 +111,9 @@ public class Application {
             }
 
             @Override
-            public void keyReleased(KeyEvent e) {
-            }
-
+            public void keyReleased(KeyEvent e) {}
             @Override
-            public void keyTyped(KeyEvent e) {
-            }
+            public void keyTyped(KeyEvent e) {}
         });
 
         panel.setFocusable(true);
@@ -117,8 +122,18 @@ public class Application {
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
+        frame.setState(Frame.ICONIFIED);
+        frame.setSize(100, 100);
+
+        if (copyOfOriginalMatrix == null) {
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        }
     }
+
+    /**
+     * This method is used to read a matrix from a file and store it in a 2d Array.
+     * @return 2d Array.
+     */
 
     public int[][] matrix() {
         Scanner input = null;
@@ -163,10 +178,10 @@ public class Application {
 
             while (input2.hasNextLine()) {
                 String[] linesFromFile = input2.nextLine().split("\\s");
-                for (int index = 0; index < linesFromFile.length; index++) {
+                for (int columnIndex = 0; columnIndex < linesFromFile.length; columnIndex++) {
 
-                    if (linesFromFile[index].matches("[0-9]+")) {
-                        numbersFromFile = Double.parseDouble(linesFromFile[index]);
+                    if (linesFromFile[columnIndex].matches("[0-9]+")) {
+                        numbersFromFile = Double.parseDouble(linesFromFile[columnIndex]);
                         if (numbersFromFile > Integer.MAX_VALUE) {
                             System.out.println("Your matrix contains a number that is to big. Please change it.");
                             return null;
@@ -178,7 +193,7 @@ public class Application {
                             return null;
                         }
 
-                        matrix[indexLine][index] = Integer.parseInt(linesFromFile[index]);
+                        matrix[indexLine][columnIndex] = Integer.parseInt(linesFromFile[columnIndex]);
                     } else {
                         System.out.println("Please enter only numbers.");
                         return null;
@@ -188,8 +203,8 @@ public class Application {
             }
 
             for (int lineIndex = 0; lineIndex < matrix.length; lineIndex++) {
-                for (int colIndex = 0; colIndex < matrix.length; colIndex++) {
-                    if (matrix[lineIndex][colIndex] == 1) {
+                for (int columnIndex = 0; columnIndex < matrix[lineIndex].length; columnIndex++) {
+                    if (matrix[lineIndex][columnIndex] == 1) {
                         numberOfCharacters++;
                     }
                 }
@@ -202,8 +217,8 @@ public class Application {
             //Afisez matricea
             for (int lineIndex = 0; lineIndex < matrix.length; lineIndex++) {
                 System.out.println();
-                for (int colIndex = 0; colIndex < matrix.length; colIndex++) {
-                    System.out.print(matrix[lineIndex][colIndex] + " ");
+                for (int columnIndex = 0; columnIndex < matrix[lineIndex].length; columnIndex++) {
+                    System.out.print(matrix[lineIndex][columnIndex] + " ");
                 }
             }
             System.out.println();
@@ -211,17 +226,19 @@ public class Application {
             System.out.println("The matrice is not composed of equal number of lines and columns.");
         }
 
-
         return matrix;
     }
 
-
+    /**
+     * This method is used to find and return the position of the character (number 1) in the matrix.
+     * @return the position of the character in the matrix.
+     */
     public PositionPair positionOfCharacter() {
         int charLinePos = 0;
         int charColPos = 0;
 
         for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length; lineIndex++) {
-            for (int colIndex = 0; colIndex < copyOfOriginalMatrix.length; colIndex++) {
+            for (int colIndex = 0; colIndex < copyOfOriginalMatrix[lineIndex].length; colIndex++) {
                 if (copyOfOriginalMatrix[lineIndex][colIndex] == 1) {
                     charLinePos = lineIndex;
                     charColPos = colIndex;
@@ -232,11 +249,15 @@ public class Application {
         return new PositionPair(charLinePos, charColPos);
     }
 
+    /**
+     * This method is used to display the matrix after the position of the character was changed.
+     * @param matrix takes a 2d Array that has the position of the character changed.
+     */
     private void displayTheMatrix(int[][] matrix) {
         System.out.println();
         for (int lineIndex = 0; lineIndex < matrix.length; lineIndex++) {
             System.out.println();
-            for (int colIndex = 0; colIndex < matrix.length; colIndex++) {
+            for (int colIndex = 0; colIndex < matrix[lineIndex].length; colIndex++) {
                 System.out.print(matrix[lineIndex][colIndex] + " ");
             }
         }
