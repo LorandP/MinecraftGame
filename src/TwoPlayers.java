@@ -1,14 +1,8 @@
-//import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
-//import jdk.internal.util.xml.impl.Pair;
-//import oracle.jvm.hotspot.jfr.JFR;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.text.Position;
-import java.applet.Applet;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.Rectangle2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,13 +10,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
-
 /**
- * Created by lorand on 21/02/2017.
+ * Created by Hermes on 02/03/2017.
  */
-public class Application extends JPanel implements KeyListener, Runnable {
+public class TwoPlayers extends JPanel implements KeyListener{
     private static int[][] copyOfOriginalMatrix;
-
     private int rectangleXAxis = 0;
     private int rectangleYAxis = 0;
     private int keyDown = 0;
@@ -30,9 +22,8 @@ public class Application extends JPanel implements KeyListener, Runnable {
     private int down = 0;
     private int left = 0;
     private int right = 0;
-    private static int sheepCollected = 0;
 
-    private static JLabel score = new JLabel();
+    JPanel panel = new JPanel();
     private BufferedImage characterRight;
     private BufferedImage characterLeft;
     private BufferedImage characterBack;
@@ -49,44 +40,37 @@ public class Application extends JPanel implements KeyListener, Runnable {
     private BufferedImage sheep50;
     private BufferedImage wormhole;
 
-
-    public Application() {
+    public TwoPlayers(){
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        score.setText("Sheep's teleported: "+sheepCollected);
 
         copyOfOriginalMatrix = matrix();
-
         try {
-            stone = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\stone.png"));
-            characterRight = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\steveRight.png"));
-            characterLeft = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\steveLeft.png"));
-            characterBack = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\steveBack.png"));
-            characterFront = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\steveFront.png"));
-            grass = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\grass.png"));
-            sheep = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\Sheep.png"));
-            wormhole =ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\wormhole.png"));
+            stone = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/stone.png"));
+            characterRight = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveRight.png"));
+            characterLeft = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveLeft.png"));
+            characterBack = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveBack.png"));
+            characterFront = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveFront.png"));
+            grass = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/grass.png"));
+            sheep = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/Sheep.png"));
+            wormhole =ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/wormhole.png"));
 
-            stone50 = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\50Pixel\\stone.png"));
-            characterRight50 = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\50Pixel\\steveRight.png"));
-            characterLeft50 = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\50Pixel\\steveLeft.png"));
-            characterBack50 = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\50Pixel\\steveBack.png"));
-            characterFront50 = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\50Pixel\\steveFront.png"));
-            grass50 = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\50Pixel\\grass.png"));
-            sheep50 = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\50Pixel\\Sheep.png"));
+            stone50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/stone.png"));
+            characterRight50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveRight.png"));
+            characterLeft50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveLeft.png"));
+            characterBack50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveBack.png"));
+            characterFront50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveFront.png"));
+            grass50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/grass.png"));
+            sheep50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/Sheep.png"));
         } catch (IOException e) {
             System.out.println(e);
         }
-
-
     }
-
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         PositionPair charPosition = positionOfCharacter();
         Graphics2D graphics2D = (Graphics2D) g;
-        score.setText("Sheep's teleported: "+sheepCollected);
 
         if (copyOfOriginalMatrix[0].length > 9 || copyOfOriginalMatrix.length > 9) {
             ((Graphics2D) g).drawImage(grass50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
@@ -171,9 +155,7 @@ public class Application extends JPanel implements KeyListener, Runnable {
             }
         }
 
-
     }
-
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -181,9 +163,7 @@ public class Application extends JPanel implements KeyListener, Runnable {
         int characterLinePosition = charPosition.getLine();
         int characterColumnPosition = charPosition.getColumn();
         keyDown = e.getKeyCode();
-        System.out.println("sheepsAbdoucted = " +sheepCollected);
-
-
+        System.out.println("up de sus= " +up);
 
 
         if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -220,7 +200,6 @@ public class Application extends JPanel implements KeyListener, Runnable {
                         copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] == 2) {
                     copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] = 4;
                     up = 1;
-                    sheepCollected++;
                     System.out.println("You have found the sheep!");
                     //frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
                 }
@@ -261,7 +240,6 @@ public class Application extends JPanel implements KeyListener, Runnable {
                     copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] == 2) {
                 copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] = 4;
                 left = 1;
-                sheepCollected++;
                 System.out.println("You have found the sheep!");
                 // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
             }
@@ -305,7 +283,7 @@ public class Application extends JPanel implements KeyListener, Runnable {
                     copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] == 2) {
                 copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] = 4;
                 down = 1;
-                sheepCollected++;
+
                 System.out.println("You have found the sheep!");
                 // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
             }
@@ -346,25 +324,20 @@ public class Application extends JPanel implements KeyListener, Runnable {
                     copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] == 2) {
                 copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] = 4;
                 right = 1;
-                sheepCollected++;
                 System.out.println("You have found the sheep!");
                 // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
             }
 
         }
-        score.setText("Sheep's teleported: "+sheepCollected);
+
+
         repaint();
         displayTheMatrix(copyOfOriginalMatrix);
     }
-
     @Override
     public void keyTyped(KeyEvent e) { }
-
     @Override
     public void keyReleased(KeyEvent e) { }
-
-
-
     /**
      * This method is used to read a matrix from a file and store it in a 2d Array.
      *
@@ -374,18 +347,18 @@ public class Application extends JPanel implements KeyListener, Runnable {
     public int[][] matrix() {
         Scanner input = null;
         try {
-            input = new Scanner(new FileReader("D:\\Projects InteliJ\\MInecraft2\\Map5.txt"));
+            input = new Scanner(new FileReader("/Users/lorand/IntellijProjects/MinecraftGame/Map2players.txt"));
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
         Scanner input2 = null;
-        try {
-            input2 = new Scanner(new FileReader("D:\\Projects InteliJ\\MInecraft2\\Map5.txt"));
+       try {
+            input2 = new Scanner(new FileReader("/Users/lorand/IntellijProjects/MinecraftGame/Map2players.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
 
         int[][] matrix = null;
         double numbersFromFile = 0;
@@ -422,8 +395,8 @@ public class Application extends JPanel implements KeyListener, Runnable {
                             System.out.println("Your matrix contains a number that is to big. Please change it.");
                             return null;
                         }
-                        if (numbersFromFile != 1 && numbersFromFile != 2 && numbersFromFile != 3
-                                && numbersFromFile != 0 && numbersFromFile != 5) {
+                        if (numbersFromFile != 1 && numbersFromFile != 2 && numbersFromFile != 3 && numbersFromFile != 5
+                                && numbersFromFile != 0) {
                             System.out.println("Unknown object " + numbersFromFile + "\n" +
                                     "Please change it to 1, 2, 3, 5 or 0");
                             return null;
@@ -464,7 +437,6 @@ public class Application extends JPanel implements KeyListener, Runnable {
 
         return matrix;
     }
-
     /**
      * This method is used to find and return the position of the character (number 1) in the matrix.
      *
@@ -499,133 +471,5 @@ public class Application extends JPanel implements KeyListener, Runnable {
             }
         }
         System.out.println();
-    }
-    @Override
-    public void run() {
-        while (true){
-                score.setText("Sheep's teleported: "+sheepCollected);
-                repaint();
-           }
-    }
-    public static void main(String[] args) {
-
-        BufferedImage backgroundImage = null;
-        try {
-            backgroundImage = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\MinecraftPlanet3.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        //tartupWindow startupWindow = new StartupWindow(backgroundImage);
-        JLabel welcomeMessage = new JLabel("Welcome to mincraft world");
-        JLabel welcomeMessage2 = new JLabel("Choose the number of players");
-        welcomeMessage.setLocation(150,100);
-        welcomeMessage.setSize(500,30);
-        welcomeMessage.setForeground(Color.RED);
-        welcomeMessage.setFont(new Font("Monospaced", Font.BOLD,30));
-        welcomeMessage2.setLocation(200,150);
-        welcomeMessage2.setSize(500,50);
-        welcomeMessage2.setForeground(Color.WHITE);
-        welcomeMessage2.setFont(new Font("Monospaced", Font.BOLD,20));
-
-        JButton onePlayer = new JButton("Play");
-        JButton twoPlayers = new JButton("2 players");
-        onePlayer.setSize(120,50);
-        onePlayer.setLocation(320,200);
-        twoPlayers.setSize(120,50);
-        twoPlayers.setLocation(450,300);
-
-        final JFrame frame2 = new JFrame("Minecraft World");
-        frame2.setContentPane(new StartupWindow(backgroundImage));
-        frame2.setVisible(true);
-        frame2.setResizable(false);
-        frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame2.setSize(780,440);
-        frame2.add(welcomeMessage);
-       // frame2.add(welcomeMessage2);
-        frame2.add(onePlayer);
-        //frame2.add(twoPlayers);
-/*
-        twoPlayers.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TwoPlayers twoPlayers1 = new TwoPlayers();
-                //frame2.dispatchEvent(new WindowEvent(frame2, WindowEvent.WINDOW_CLOSING));
-                frame2.dispose();
-                frame.add(twoPlayers1);
-                frame.setVisible(true);
-                frame.setResizable(false);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                copyOfOriginalMatrix = twoPlayers1.matrix();
-
-                if (copyOfOriginalMatrix == null) {
-                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                }
-
-                if (copyOfOriginalMatrix[0].length > 20 || copyOfOriginalMatrix.length > 20) {
-                    System.out.println("The map is to big. Please provide a map with lines or/and columns no more then 20.");
-                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                } else if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
-                        (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
-                    frame.setSize(copyOfOriginalMatrix[0].length * 50, copyOfOriginalMatrix.length * 51);
-
-                } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
-                    frame.setSize(1000, 1020);
-                } else
-                    frame.setSize(copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 104);
-            }
-        });
-*/
-        onePlayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Application application = new Application();
-
-                frame2.dispose();
-                JFrame frame = new JFrame();
-                //frame.setLayout(null);
-               // Thread thread = new Thread(application);
-               // thread.start();
-
-                System.out.println(sheepCollected);
-
-                if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
-                        (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
-                    score.setBounds(new Rectangle(copyOfOriginalMatrix[0].length * 35,copyOfOriginalMatrix.length * 45,400,200));
-                } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
-                    frame.setSize(1000, 1020);
-                    score.setBounds(new Rectangle(copyOfOriginalMatrix[0].length * 100,copyOfOriginalMatrix.length * 104,400,200));
-                } else
-                    score.setBounds(new Rectangle(copyOfOriginalMatrix[0].length * 60,copyOfOriginalMatrix.length * 110,100,100));
-
-                score.setForeground(Color.RED);
-                score.setFont(new Font("Monospaced", Font.BOLD,20));
-
-               frame.add(score);
-                frame.add(application);
-
-                frame.setVisible(true);
-                frame.setResizable(false);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
-                if (copyOfOriginalMatrix == null) {
-                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                }
-
-                if (copyOfOriginalMatrix[0].length > 20 || copyOfOriginalMatrix.length > 20) {
-                    System.out.println("The map is to big. Please provide a map with lines or/and columns no more then 20.");
-                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                } else if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
-                        (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
-                    frame.setSize(copyOfOriginalMatrix[0].length * 50, copyOfOriginalMatrix.length * 55);
-
-                } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
-                    frame.setSize(1000, 1020);
-                } else
-                    frame.setSize(copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 120);
-            }
-        });
     }
 }
