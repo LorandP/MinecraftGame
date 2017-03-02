@@ -2,123 +2,380 @@ import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
 import jdk.internal.util.xml.impl.Pair;
 import oracle.jvm.hotspot.jfr.JFR;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.Position;
 import java.applet.Applet;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 
 /**
  * Created by lorand on 21/02/2017.
  */
-public class Application {
-    private int[][] copyOfOriginalMatrix;
+public class Application extends JPanel implements KeyListener {
+    private static int[][] copyOfOriginalMatrix;
+    private static JFrame frame = new JFrame();
+    private int rectangleXAxis = 0;
+    private int rectangleYAxis = 0;
+    private int keyDown = 0;
+    private int up = 0;
+    private int down = 0;
+    private int left = 0;
+    private int right = 0;
+    //private boolean twoPlayers = false;
+    private static int sheepCollected = 0;
+
+    private static JLabel score = new JLabel("Sheep's teleported: ");
+    private BufferedImage characterRight;
+    private BufferedImage characterLeft;
+    private BufferedImage characterBack;
+    private BufferedImage characterFront;
+    private BufferedImage stone;
+    private BufferedImage grass;
+    private BufferedImage sheep;
+    private BufferedImage characterRight50;
+    private BufferedImage characterLeft50;
+    private BufferedImage characterBack50;
+    private BufferedImage characterFront50;
+    private BufferedImage stone50;
+    private BufferedImage grass50;
+    private BufferedImage sheep50;
+    private BufferedImage wormhole;
 
 
-    private void MinecratTest() {
+    public Application() {
+        addKeyListener(this);
+        setFocusable(true);
+        setFocusTraversalKeysEnabled(false);
         copyOfOriginalMatrix = matrix();
-        JPanel panel = new JPanel();
-        JFrame frame = new JFrame();
+        try {
+            stone = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/stone.png"));
+            characterRight = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveRight.png"));
+            characterLeft = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveLeft.png"));
+            characterBack = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveBack.png"));
+            characterFront = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveFront.png"));
+            grass = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/grass.png"));
+            sheep = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/Sheep.png"));
+            wormhole =ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/wormhole.png"));
 
-        panel.addKeyListener(new KeyListener() {
+            stone50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/stone.png"));
+            characterRight50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveRight.png"));
+            characterLeft50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveLeft.png"));
+            characterBack50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveBack.png"));
+            characterFront50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveFront.png"));
+            grass50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/grass.png"));
+            sheep50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/Sheep.png"));
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        setLayout(null);
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                PositionPair charPosition = positionOfCharacter();
-                int characterLinePosition = charPosition.getLine();
-                int characterColumnPosition = charPosition.getColumn();
-
-                if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    if (characterLinePosition - 1 >= 0) {
-                        if (copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] != 3 &&
-                                copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] != 2) {
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
-                            copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] = 1;
-                        }
-                    }
-                    if (characterLinePosition - 1 >= 0) {
-                        if (copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
-                                copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] == 2) {
-                            System.out.println("You have found the sheep!");
-                            //frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                        }
-                    }
-
-                }
-                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-
-                    if (characterColumnPosition - 1 >= 0 &&
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] != 3 &&
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] != 2) {
-                        copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] = 1;
-                        copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
-                    }
-                    if (characterColumnPosition - 1 >= 0 &&
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] == 2) {
-                        System.out.println("You have found the sheep!");
-                        // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                    }
-                }
-
-                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-
-                    if (characterLinePosition + 1 < copyOfOriginalMatrix.length &&
-                            copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] != 3 &&
-                            copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] != 2) {
-                        copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] = 1;
-                        copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
-                    }
-                    if (characterLinePosition + 1 < copyOfOriginalMatrix.length &&
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
-                            copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] == 2) {
-                        System.out.println("You have found the sheep!");
-                        // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                    }
-                }
-
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    if (characterColumnPosition + 1 < copyOfOriginalMatrix[characterLinePosition].length &&
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] != 3 &&
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] != 2) {
-                        copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] = 1;
-                        copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
-                    }
-                    if (characterColumnPosition + 1 < copyOfOriginalMatrix[characterLinePosition].length &&
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
-                            copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] == 2) {
-                        System.out.println("You have found the sheep!");
-                        // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                    }
-
-                }
-                displayTheMatrix(copyOfOriginalMatrix);
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-        });
-
-        panel.setFocusable(true);
-        panel.requestFocusInWindow();
-        frame.add(panel);
-        frame.setVisible(true);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
     }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        PositionPair charPosition = positionOfCharacter();
+        Graphics2D graphics2D = (Graphics2D) g;
+
+        if (copyOfOriginalMatrix[0].length > 9 || copyOfOriginalMatrix.length > 9) {
+            ((Graphics2D) g).drawImage(grass50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+            ((Graphics2D) g).drawImage(characterFront50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+
+            if (keyDown == KeyEvent.VK_UP) {
+                ((Graphics2D) g).drawImage(grass50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+                ((Graphics2D) g).drawImage(characterBack50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+            }
+            if (keyDown == KeyEvent.VK_DOWN) {
+                ((Graphics2D) g).drawImage(grass50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+                ((Graphics2D) g).drawImage(characterFront50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+            }
+            if (keyDown == KeyEvent.VK_LEFT) {
+                ((Graphics2D) g).drawImage(grass50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+                ((Graphics2D) g).drawImage(characterLeft50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+            }
+            if (keyDown == KeyEvent.VK_RIGHT) {
+                ((Graphics2D) g).drawImage(grass50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+                ((Graphics2D) g).drawImage(characterRight50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
+            }
+        } else {
+            ((Graphics2D) g).drawImage(grass, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+            ((Graphics2D) g).drawImage(characterFront, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+
+            if (keyDown == KeyEvent.VK_UP) {
+                ((Graphics2D) g).drawImage(grass, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+                ((Graphics2D) g).drawImage(characterBack, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+            }
+            if (keyDown == KeyEvent.VK_DOWN) {
+                ((Graphics2D) g).drawImage(grass, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+                ((Graphics2D) g).drawImage(characterFront, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+            }
+            if (keyDown == KeyEvent.VK_LEFT) {
+                ((Graphics2D) g).drawImage(grass, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+                ((Graphics2D) g).drawImage(characterLeft, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+            }
+            if (keyDown == KeyEvent.VK_RIGHT) {
+                ((Graphics2D) g).drawImage(grass, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+                ((Graphics2D) g).drawImage(characterRight, charPosition.getColumn() * 100, charPosition.getLine() * 100, this);
+            }
+
+        }
+
+        for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length; lineIndex++) {
+            for (int colIndex = 0; colIndex < copyOfOriginalMatrix[lineIndex].length; colIndex++) {
+
+                if (copyOfOriginalMatrix[lineIndex][colIndex] == 0) {
+                    if (copyOfOriginalMatrix[0].length > 9 || copyOfOriginalMatrix.length > 9)
+                        ((Graphics2D) g).drawImage(grass50, colIndex * 50, lineIndex * 50, this);
+                    else
+                        ((Graphics2D) g).drawImage(grass, colIndex * 100, lineIndex * 100, this);
+                }
+
+                if (copyOfOriginalMatrix[lineIndex][colIndex] == 3) {
+
+                    if (copyOfOriginalMatrix[0].length > 9 || copyOfOriginalMatrix.length > 9)
+                        ((Graphics2D) g).drawImage(stone50, colIndex * 50, lineIndex * 50, this);
+                    else
+                        ((Graphics2D) g).drawImage(stone, colIndex * 100, lineIndex * 100, this);
+                }
+
+                if (copyOfOriginalMatrix[lineIndex][colIndex] == 2) {
+                    if (copyOfOriginalMatrix[0].length > 9 || copyOfOriginalMatrix.length > 9) {
+                        ((Graphics2D) g).drawImage(grass50, colIndex * 50, lineIndex * 50, this);
+                        ((Graphics2D) g).drawImage(sheep50, colIndex * 50, lineIndex * 50, this);
+                    } else {
+                        ((Graphics2D) g).drawImage(grass, colIndex * 100, lineIndex * 100, this);
+                        ((Graphics2D) g).drawImage(sheep, colIndex * 100, lineIndex * 100, this);
+                    }
+                }
+                if (copyOfOriginalMatrix[lineIndex][colIndex] == 4) {
+                    if (copyOfOriginalMatrix[0].length > 9 || copyOfOriginalMatrix.length > 9) {
+                        ((Graphics2D) g).drawImage(grass50, colIndex * 50, lineIndex * 50, this);
+                        ((Graphics2D) g).drawImage(wormhole, colIndex * 50, lineIndex * 50, this);
+                    } else {
+                        ((Graphics2D) g).drawImage(grass, colIndex * 100, lineIndex * 100, this);
+                        ((Graphics2D) g).drawImage(wormhole, colIndex * 100, lineIndex * 100, this);
+                    }
+                }
+
+            }
+        }
+
+    }
+
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        PositionPair charPosition = positionOfCharacter();
+        int characterLinePosition = charPosition.getLine();
+        int characterColumnPosition = charPosition.getColumn();
+        keyDown = e.getKeyCode();
+        System.out.println("sheepsAbdoucted = " +sheepCollected);
+
+
+
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+
+            //Inchid vortexul daca plec de langa el
+            if (down == 1){
+                copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] = 0;
+            }
+            down = 0;
+            if (up == 1){
+                copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] = 0;
+            }
+            up = 0;
+            if (right == 1){
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] = 0;
+            }
+            right = 0;
+            if (left == 1){
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] = 0;
+            }
+            left = 0;
+
+            //Mut characterul sau adaug vortex daca gasesc o oita
+            if (characterLinePosition - 1 >= 0) {
+                if (copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] != 3 &&
+                        copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] != 2) {
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
+                    copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] = 1;
+                    rectangleYAxis -= 100;
+                }
+            }
+            if (characterLinePosition - 1 >= 0) {
+                if (copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
+                        copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] == 2) {
+                    copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] = 4;
+                    up = 1;
+                    sheepCollected++;
+                    System.out.println("You have found the sheep!");
+                    //frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                }
+            }
+
+        }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+
+            //Inchid vortexul daca plec de langa el
+            if (right == 1){
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] = 0;
+            }
+            right = 0;
+            if (left == 1){
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] = 0;
+            }
+            left = 0;
+            if (down == 1){
+                copyOfOriginalMatrix[characterLinePosition+1][characterColumnPosition] = 0;
+            }
+            down = 0;
+            if (up == 1){
+                copyOfOriginalMatrix[characterLinePosition-1][characterColumnPosition] = 0;
+            }
+            up = 0;
+
+            //Mut characterul sau adaug vortex daca gasesc o oita
+            if (characterColumnPosition - 1 >= 0 &&
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] != 3 &&
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] != 2) {
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] = 1;
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
+                rectangleXAxis -= 100;
+                System.out.println(rectangleYAxis);
+            }
+            if (characterColumnPosition - 1 >= 0 &&
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] == 2) {
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] = 4;
+                left = 1;
+                sheepCollected++;
+                System.out.println("You have found the sheep!");
+                // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            }
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+
+            //Inchid vortexul daca plec de langa el
+            if (up == 1){
+                copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] = 0;
+            }
+            up = 0;
+            if (right == 1){
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition+ 1] = 0;
+            }
+            right = 0;
+            if (left == 1){
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition -1] = 0;
+            }
+            left = 0;
+            if (down == 1){
+                copyOfOriginalMatrix[characterLinePosition+1][characterColumnPosition] = 0;
+            }
+            down = 0;
+
+            //Mut characterul sau adaug vortex daca gasesc o oita
+            if (characterLinePosition + 1 < copyOfOriginalMatrix.length &&
+                    copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] != 3 &&
+                    copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] != 2) {
+                copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] = 1;
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
+                rectangleYAxis += 100;
+                if (up == 1){
+                    copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] = 0;
+                }
+                up = 0;
+                System.out.println(rectangleYAxis);
+            }
+            if (characterLinePosition + 1 < copyOfOriginalMatrix.length &&
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
+                    copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] == 2) {
+                copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] = 4;
+                down = 1;
+                sheepCollected++;
+                System.out.println("You have found the sheep!");
+                // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            }
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+
+            //Inchid vortexul daca plec de langa el
+            if (right == 1){
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] = 0;
+            }
+            right = 0;
+            if (left == 1)
+            {
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] = 0;
+            }
+            if (down == 1){
+                copyOfOriginalMatrix[characterLinePosition+1][characterColumnPosition] = 0;
+            }
+            down = 0;
+            if (up == 1){
+                copyOfOriginalMatrix[characterLinePosition-1][characterColumnPosition] = 0;
+            }
+            up = 0;
+            left = 0;
+
+            //Mut characterul sau adaug vortex daca gasesc o oita
+            if (characterColumnPosition + 1 < copyOfOriginalMatrix[characterLinePosition].length &&
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] != 3 &&
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] != 2) {
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] = 1;
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
+                rectangleXAxis += 100;
+                System.out.println(rectangleXAxis);
+            }
+            if (characterColumnPosition + 1 < copyOfOriginalMatrix[characterLinePosition].length &&
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
+                    copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] == 2) {
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] = 4;
+                right = 1;
+                sheepCollected++;
+                System.out.println("You have found the sheep!");
+                // frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            }
+
+        }
+
+        score.setLocation(900,900);
+        score.setForeground(Color.RED);
+        score.setFont(new Font("Monospaced", Font.BOLD,30));
+
+        // System.out.println(sheepCollected);
+        score.setText("Sheep's teleported: "+sheepCollected);
+       // score.setLayout(new BoxLayout(score, BoxLayout.LINE_AXIS));
+       // score.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+        //score.add(Box.createHorizontalGlue());
+       // this.add(score);
+        //this.setVisible(true);
+        repaint();
+        displayTheMatrix(copyOfOriginalMatrix);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) { }
+
+    @Override
+    public void keyReleased(KeyEvent e) { }
+
+
+
+    /**
+     * This method is used to read a matrix from a file and store it in a 2d Array.
+     *
+     * @return 2d Array.
+     */
 
     public int[][] matrix() {
         Scanner input = null;
@@ -163,22 +420,22 @@ public class Application {
 
             while (input2.hasNextLine()) {
                 String[] linesFromFile = input2.nextLine().split("\\s");
-                for (int index = 0; index < linesFromFile.length; index++) {
+                for (int columnIndex = 0; columnIndex < linesFromFile.length; columnIndex++) {
 
-                    if (linesFromFile[index].matches("[0-9]+")) {
-                        numbersFromFile = Double.parseDouble(linesFromFile[index]);
+                    if (linesFromFile[columnIndex].matches("[0-9]+")) {
+                        numbersFromFile = Double.parseDouble(linesFromFile[columnIndex]);
                         if (numbersFromFile > Integer.MAX_VALUE) {
                             System.out.println("Your matrix contains a number that is to big. Please change it.");
                             return null;
                         }
                         if (numbersFromFile != 1 && numbersFromFile != 2 && numbersFromFile != 3
-                                && numbersFromFile != 0) {
+                                && numbersFromFile != 0 && numbersFromFile != 5) {
                             System.out.println("Unknown object " + numbersFromFile + "\n" +
-                                    "Please change it to 1, 2, 3 or 0");
+                                    "Please change it to 1, 2, 3, 5 or 0");
                             return null;
                         }
 
-                        matrix[indexLine][index] = Integer.parseInt(linesFromFile[index]);
+                        matrix[indexLine][columnIndex] = Integer.parseInt(linesFromFile[columnIndex]);
                     } else {
                         System.out.println("Please enter only numbers.");
                         return null;
@@ -188,8 +445,8 @@ public class Application {
             }
 
             for (int lineIndex = 0; lineIndex < matrix.length; lineIndex++) {
-                for (int colIndex = 0; colIndex < matrix.length; colIndex++) {
-                    if (matrix[lineIndex][colIndex] == 1) {
+                for (int columnIndex = 0; columnIndex < matrix[lineIndex].length; columnIndex++) {
+                    if (matrix[lineIndex][columnIndex] == 1) {
                         numberOfCharacters++;
                     }
                 }
@@ -202,8 +459,8 @@ public class Application {
             //Afisez matricea
             for (int lineIndex = 0; lineIndex < matrix.length; lineIndex++) {
                 System.out.println();
-                for (int colIndex = 0; colIndex < matrix.length; colIndex++) {
-                    System.out.print(matrix[lineIndex][colIndex] + " ");
+                for (int columnIndex = 0; columnIndex < matrix[lineIndex].length; columnIndex++) {
+                    System.out.print(matrix[lineIndex][columnIndex] + " ");
                 }
             }
             System.out.println();
@@ -211,17 +468,19 @@ public class Application {
             System.out.println("The matrice is not composed of equal number of lines and columns.");
         }
 
-
         return matrix;
     }
 
-
+    /**
+     * This method is used to find and return the position of the character (number 1) in the matrix.
+     *
+     * @return the position of the character in the matrix.
+     */
     public PositionPair positionOfCharacter() {
         int charLinePos = 0;
         int charColPos = 0;
-
         for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length; lineIndex++) {
-            for (int colIndex = 0; colIndex < copyOfOriginalMatrix.length; colIndex++) {
+            for (int colIndex = 0; colIndex < copyOfOriginalMatrix[lineIndex].length; colIndex++) {
                 if (copyOfOriginalMatrix[lineIndex][colIndex] == 1) {
                     charLinePos = lineIndex;
                     charColPos = colIndex;
@@ -232,20 +491,136 @@ public class Application {
         return new PositionPair(charLinePos, charColPos);
     }
 
+    /**
+     * This method is used to display the matrix after the position of the character was changed.
+     *
+     * @param matrix takes a 2d Array that has the position of the character changed.
+     */
     private void displayTheMatrix(int[][] matrix) {
         System.out.println();
         for (int lineIndex = 0; lineIndex < matrix.length; lineIndex++) {
             System.out.println();
-            for (int colIndex = 0; colIndex < matrix.length; colIndex++) {
+            for (int colIndex = 0; colIndex < matrix[lineIndex].length; colIndex++) {
                 System.out.print(matrix[lineIndex][colIndex] + " ");
             }
         }
         System.out.println();
     }
 
+
+
     public static void main(String[] args) {
-        Application application = new Application();
-        application.MinecratTest();
+
+        BufferedImage backgroundImage = null;
+        try {
+            backgroundImage = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/MinecraftPlanet3.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        //tartupWindow startupWindow = new StartupWindow(backgroundImage);
+        JLabel welcomeMessage = new JLabel("Welcome to mincraft world");
+        JLabel welcomeMessage2 = new JLabel("Choose the number of players");
+        welcomeMessage.setLocation(150,100);
+        welcomeMessage.setSize(500,30);
+        welcomeMessage.setForeground(Color.RED);
+        welcomeMessage.setFont(new Font("Monospaced", Font.BOLD,30));
+        welcomeMessage2.setLocation(200,150);
+        welcomeMessage2.setSize(500,50);
+        welcomeMessage2.setForeground(Color.WHITE);
+        welcomeMessage2.setFont(new Font("Monospaced", Font.BOLD,20));
+
+        JButton onePlayer = new JButton("Play");
+        JButton twoPlayers = new JButton("2 players");
+        onePlayer.setSize(120,50);
+        onePlayer.setLocation(320,200);
+        twoPlayers.setSize(120,50);
+        twoPlayers.setLocation(450,300);
+
+        JFrame frame2 = new JFrame("Minecraft World");
+        frame2.setContentPane(new StartupWindow(backgroundImage));
+        frame2.setVisible(true);
+        frame2.setResizable(false);
+        frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame2.setSize(780,440);
+        frame2.add(welcomeMessage);
+       // frame2.add(welcomeMessage2);
+        frame2.add(onePlayer);
+        //frame2.add(twoPlayers);
+/*
+        twoPlayers.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TwoPlayers twoPlayers1 = new TwoPlayers();
+                //frame2.dispatchEvent(new WindowEvent(frame2, WindowEvent.WINDOW_CLOSING));
+                frame2.dispose();
+                frame.add(twoPlayers1);
+                frame.setVisible(true);
+                frame.setResizable(false);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                copyOfOriginalMatrix = twoPlayers1.matrix();
+
+                if (copyOfOriginalMatrix == null) {
+                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                }
+
+                if (copyOfOriginalMatrix[0].length > 20 || copyOfOriginalMatrix.length > 20) {
+                    System.out.println("The map is to big. Please provide a map with lines or/and columns no more then 20.");
+                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                } else if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
+                        (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
+                    frame.setSize(copyOfOriginalMatrix[0].length * 50, copyOfOriginalMatrix.length * 51);
+
+                } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
+                    frame.setSize(1000, 1020);
+                } else
+                    frame.setSize(copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 104);
+            }
+        });
+*/
+        onePlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Application application = new Application();
+                //frame2.dispatchEvent(new WindowEvent(frame2, WindowEvent.WINDOW_CLOSING));
+
+                frame2.dispose();
+
+               // panel.add(application);
+               // panel.add(score);
+
+                //panel.setVisible(true);
+
+                //Insets insets = panel.getInsets();
+                //Dimension dimension = score.getPreferredSize();
+                //score.setBounds(200+insets.left,800+insets.top,200,200);
+
+
+                frame.add(application);
+                frame.setVisible(true);
+                frame.setResizable(false);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.add(score);
+
+                if (copyOfOriginalMatrix == null) {
+                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                }
+
+                if (copyOfOriginalMatrix[0].length > 20 || copyOfOriginalMatrix.length > 20) {
+                    System.out.println("The map is to big. Please provide a map with lines or/and columns no more then 20.");
+                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                } else if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
+                        (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
+                    frame.setSize(copyOfOriginalMatrix[0].length * 50, copyOfOriginalMatrix.length * 55);
+
+                } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
+                    frame.setSize(1000, 1020);
+                } else
+                    frame.setSize(copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 104);
+            }
+        });
 
 
     }

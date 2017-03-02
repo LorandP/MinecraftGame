@@ -1,5 +1,7 @@
 /**
  * Created by Hermes on 27/02/2017.
+ * This class is used to return the position of the character because we need to return two positions.
+ * One is the position on the line and the second the position on the column.
  */
 class PositionPair {
     private int line;
