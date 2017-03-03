@@ -1,9 +1,10 @@
-import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
-import jdk.internal.util.xml.impl.Pair;
-import oracle.jvm.hotspot.jfr.JFR;
+//import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
+//import jdk.internal.util.xml.impl.Pair;
+//import oracle.jvm.hotspot.jfr.JFR;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.text.Position;
 import java.applet.Applet;
 import java.awt.*;
@@ -22,7 +23,8 @@ import java.util.Scanner;
  */
 public class Application extends JPanel implements KeyListener {
     private static int[][] copyOfOriginalMatrix;
-    private static JFrame frame = new JFrame();
+
+
     private int rectangleXAxis = 0;
     private int rectangleYAxis = 0;
     private int keyDown = 0;
@@ -30,10 +32,14 @@ public class Application extends JPanel implements KeyListener {
     private int down = 0;
     private int left = 0;
     private int right = 0;
-    //private boolean twoPlayers = false;
     private static int sheepCollected = 0;
+    private String imagePath = "/Users/lorand/IntellijProjects/MinecraftGame/MinecraftStuff/";
+    private String imagePath50Pixel = "/Users/lorand/IntellijProjects/MinecraftGame/MinecraftStuff/50Pixel/";
 
-    private static JLabel score = new JLabel("Sheep's teleported: ");
+
+    private static JFrame frame = new JFrame();
+    private static JFrame endGameFrame = new JFrame();
+    private static JLabel score = new JLabel();
     private BufferedImage characterRight;
     private BufferedImage characterLeft;
     private BufferedImage characterBack;
@@ -55,35 +61,95 @@ public class Application extends JPanel implements KeyListener {
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        copyOfOriginalMatrix = matrix();
-        try {
-            stone = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/stone.png"));
-            characterRight = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveRight.png"));
-            characterLeft = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveLeft.png"));
-            characterBack = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveBack.png"));
-            characterFront = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/steveFront.png"));
-            grass = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/grass.png"));
-            sheep = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/Sheep.png"));
-            wormhole =ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/wormhole.png"));
+        //score.setText("Sheep's teleported: "+sheepCollected);
 
-            stone50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/stone.png"));
-            characterRight50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveRight.png"));
-            characterLeft50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveLeft.png"));
-            characterBack50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveBack.png"));
-            characterFront50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/steveFront.png"));
-            grass50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/grass.png"));
-            sheep50 = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/50Pixel/Sheep.png"));
+        //Dimension size = getPreferredSize();
+
+        //setPreferredSize(size);
+        //c.add(score,BorderLayout.SOUTH);
+
+        //add(score);
+
+        //add(application, BorderLayout.NORTH);
+
+       // setVisible(true);
+        //setResizable(false);
+        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+
+        copyOfOriginalMatrix = matrix();
+
+        try {
+            stone = ImageIO.read(new File(imagePath+"stone.png"));
+            characterRight = ImageIO.read(new File(imagePath+"steveRight.png"));
+            characterLeft = ImageIO.read(new File(imagePath+"steveLeft.png"));
+            characterBack = ImageIO.read(new File(imagePath+"steveBack.png"));
+            characterFront = ImageIO.read(new File(imagePath+"steveFront.png"));
+            grass = ImageIO.read(new File(imagePath+"grass.png"));
+            sheep = ImageIO.read(new File(imagePath+"Sheep.png"));
+            wormhole =ImageIO.read(new File(imagePath+"wormhole.png"));
+
+            stone50 = ImageIO.read(new File(imagePath50Pixel+"stone.png"));
+            characterRight50 = ImageIO.read(new File(imagePath50Pixel+"steveRight.png"));
+            characterLeft50 = ImageIO.read(new File(imagePath50Pixel+"steveLeft.png"));
+            characterBack50 = ImageIO.read(new File(imagePath50Pixel+"steveBack.png"));
+            characterFront50 = ImageIO.read(new File(imagePath50Pixel+"steveFront.png"));
+            grass50 = ImageIO.read(new File(imagePath50Pixel+"grass.png"));
+            sheep50 = ImageIO.read(new File(imagePath50Pixel+"Sheep.png"));
         } catch (IOException e) {
             System.out.println(e);
         }
-        setLayout(null);
 
     }
+
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         PositionPair charPosition = positionOfCharacter();
         Graphics2D graphics2D = (Graphics2D) g;
+        String sheepsCollectedValueInString ="";
+        sheepsCollectedValueInString = Integer.toString(sheepCollected);
+        System.out.println("Sheeps = "+sheepsCollectedValueInString);
+        int numberOfSheeps = 0;
+
+
+        BufferedImage backgroundImage = null;
+        try {
+            backgroundImage = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MinecraftStuff/Minecraft5.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        /// Drawing the score at the bottom
+        if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
+                (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
+            g.setFont(new Font("Bauhaus 93", Font.BOLD, 19));
+            g.setColor(Color.RED);
+            ((Graphics2D) g).drawString("Sheep's teleported: ",700,830);
+            ((Graphics2D) g).drawString(sheepsCollectedValueInString,900,830);
+        } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
+            g.setFont(new Font("Bauhaus 93", Font.BOLD, 19));
+            g.setColor(Color.RED);
+            ((Graphics2D) g).drawString(sheepsCollectedValueInString, copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 104);
+            ((Graphics2D) g).drawString("Sheep's teleported: ",copyOfOriginalMatrix[0].length * 100,copyOfOriginalMatrix.length * 104);
+        } else {
+            g.setFont(new Font("Bauhaus 93", Font.BOLD, 18));
+            g.setColor(Color.RED);
+            ((Graphics2D) g).drawString("Sheep's teleported: ", copyOfOriginalMatrix[0].length * 20, copyOfOriginalMatrix.length * 110);
+            ((Graphics2D) g).drawString(sheepsCollectedValueInString, copyOfOriginalMatrix[0].length * 60, copyOfOriginalMatrix.length * 110);
+        }
+
+
+
+        /// Drawing a time interval
+
+
+
+
+
+
 
         if (copyOfOriginalMatrix[0].length > 9 || copyOfOriginalMatrix.length > 9) {
             ((Graphics2D) g).drawImage(grass50, charPosition.getColumn() * 50, charPosition.getLine() * 50, this);
@@ -168,6 +234,100 @@ public class Application extends JPanel implements KeyListener {
             }
         }
 
+        ////  Adding a new frame with the final score
+        for (int lineIndex = 0; lineIndex < copyOfOriginalMatrix.length; lineIndex++) {
+            for (int colIndex = 0; colIndex < copyOfOriginalMatrix[lineIndex].length; colIndex++) {
+                if (copyOfOriginalMatrix[lineIndex][colIndex] == 2)
+                    numberOfSheeps++;
+            }
+        }
+        System.out.println("nr of sheeps = "+numberOfSheeps);
+
+        JLabel numOfSheeps = new JLabel();
+        JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL,0,100);
+        progressBar.setForeground(Color.GREEN);
+        progressBar.setBackground(Color.WHITE);
+        progressBar.setVisible(true);
+        progressBar.setLocation(0,839);
+       // frame.add(progressBar);
+        /*
+        Thread progressBarUpdate = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int time = 60;
+
+
+                for (int second = 0; second < time; second++){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //progressBar.setValue(100*second/60);
+                    collectTime = 100*second/60;
+                }
+
+
+            }
+        });
+        progressBarUpdate.run();
+        */
+
+        Timer timer = new Timer(500, new ActionListener() {
+            int collectTime = 0;
+            String collectionTime = Integer.toString(collectTime);
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Show TIMER");
+                collectTime++;
+
+            }
+
+        });
+        timer.start();
+        if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
+                (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
+            g.setFont(new Font("Bauhaus 93", Font.BOLD, 19));
+            g.setColor(Color.RED);
+            ((Graphics2D) g).drawString("Collection time: ",50,830);
+            ((Graphics2D) g).drawString(collectionTime,100,830);
+        } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
+            g.setFont(new Font("Bauhaus 93", Font.BOLD, 19));
+            g.setColor(Color.RED);
+            ((Graphics2D) g).drawString(collectionTime, copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 104);
+            ((Graphics2D) g).drawString("Collection time: ",copyOfOriginalMatrix[0].length * 100,copyOfOriginalMatrix.length * 104);
+        } else {
+            g.setFont(new Font("Bauhaus 93", Font.BOLD, 18));
+            g.setColor(Color.RED);
+            ((Graphics2D) g).drawString("Collection time: ", copyOfOriginalMatrix[0].length * 20, copyOfOriginalMatrix.length * 110);
+            ((Graphics2D) g).drawString(collectionTime, copyOfOriginalMatrix[0].length * 60, copyOfOriginalMatrix.length * 110);
+        }
+
+
+
+        if (numberOfSheeps == 0){
+            numOfSheeps.setBounds(new Rectangle(50,100,500,200));
+            numOfSheeps.setFont(new Font("Bauhaus 93", Font.BOLD,25));
+            numOfSheeps.setForeground(Color.WHITE);
+            numOfSheeps.setHorizontalAlignment(SwingConstants.CENTER);
+            numOfSheeps.setText("<html><h1>Good job!</h1><br> You have teleported "+sheepCollected+" sheep's to your home planet!" +
+                    "<br>Thanks to you, you'r people are fed and worm now. </html>");
+            endGameFrame.setSize(780,440);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            frame.dispose();
+            endGameFrame.setContentPane(new StartupWindow(backgroundImage));
+            endGameFrame.setLayout(null);
+            endGameFrame.add(numOfSheeps);
+            endGameFrame.setVisible(true);
+            endGameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            endGameFrame.setResizable(false);
+
+        }
+
     }
 
 
@@ -177,8 +337,6 @@ public class Application extends JPanel implements KeyListener {
         int characterLinePosition = charPosition.getLine();
         int characterColumnPosition = charPosition.getColumn();
         keyDown = e.getKeyCode();
-        System.out.println("sheepsAbdoucted = " +sheepCollected);
-
 
 
         if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -334,7 +492,7 @@ public class Application extends JPanel implements KeyListener {
                 copyOfOriginalMatrix[characterLinePosition][characterColumnPosition + 1] = 1;
                 copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
                 rectangleXAxis += 100;
-                System.out.println(rectangleXAxis);
+
             }
             if (characterColumnPosition + 1 < copyOfOriginalMatrix[characterLinePosition].length &&
                     copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
@@ -348,19 +506,9 @@ public class Application extends JPanel implements KeyListener {
 
         }
 
-        score.setLocation(900,900);
-        score.setForeground(Color.RED);
-        score.setFont(new Font("Monospaced", Font.BOLD,30));
-
-        // System.out.println(sheepCollected);
-        score.setText("Sheep's teleported: "+sheepCollected);
-       // score.setLayout(new BoxLayout(score, BoxLayout.LINE_AXIS));
-       // score.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
-        //score.add(Box.createHorizontalGlue());
-       // this.add(score);
-        //this.setVisible(true);
         repaint();
         displayTheMatrix(copyOfOriginalMatrix);
+
     }
 
     @Override
@@ -508,12 +656,11 @@ public class Application extends JPanel implements KeyListener {
     }
 
 
-
     public static void main(String[] args) {
 
         BufferedImage backgroundImage = null;
         try {
-            backgroundImage = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MineCraftStuff/MinecraftPlanet3.jpg"));
+            backgroundImage = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MinecraftStuff/MinecraftPlanet3.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -525,8 +672,8 @@ public class Application extends JPanel implements KeyListener {
         JLabel welcomeMessage2 = new JLabel("Choose the number of players");
         welcomeMessage.setLocation(150,100);
         welcomeMessage.setSize(500,30);
-        welcomeMessage.setForeground(Color.RED);
-        welcomeMessage.setFont(new Font("Monospaced", Font.BOLD,30));
+        welcomeMessage.setForeground(Color.WHITE);
+        welcomeMessage.setFont(new Font("Monospaced", Font.BOLD,32));
         welcomeMessage2.setLocation(200,150);
         welcomeMessage2.setSize(500,50);
         welcomeMessage2.setForeground(Color.WHITE);
@@ -536,10 +683,11 @@ public class Application extends JPanel implements KeyListener {
         JButton twoPlayers = new JButton("2 players");
         onePlayer.setSize(120,50);
         onePlayer.setLocation(320,200);
+        onePlayer.setFont(new Font("Monospaced", Font.PLAIN, 18));
         twoPlayers.setSize(120,50);
         twoPlayers.setLocation(450,300);
 
-        JFrame frame2 = new JFrame("Minecraft World");
+        final JFrame frame2 = new JFrame("Minecraft World");
         frame2.setContentPane(new StartupWindow(backgroundImage));
         frame2.setVisible(true);
         frame2.setResizable(false);
@@ -584,46 +732,63 @@ public class Application extends JPanel implements KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Application application = new Application();
-                //frame2.dispatchEvent(new WindowEvent(frame2, WindowEvent.WINDOW_CLOSING));
 
                 frame2.dispose();
 
-               // panel.add(application);
-               // panel.add(score);
-
-                //panel.setVisible(true);
-
-                //Insets insets = panel.getInsets();
-                //Dimension dimension = score.getPreferredSize();
-                //score.setBounds(200+insets.left,800+insets.top,200,200);
+                //frame.setLayout(null);
 
 
-                frame.add(application);
-                frame.setVisible(true);
-                frame.setResizable(false);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.add(score);
 
-                if (copyOfOriginalMatrix == null) {
-                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                }
+                System.out.println(sheepCollected);
 
-                if (copyOfOriginalMatrix[0].length > 20 || copyOfOriginalMatrix.length > 20) {
-                    System.out.println("The map is to big. Please provide a map with lines or/and columns no more then 20.");
-                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                } else if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
+                if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
                         (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
-                    frame.setSize(copyOfOriginalMatrix[0].length * 50, copyOfOriginalMatrix.length * 55);
-
+                    score.setBounds(new Rectangle(copyOfOriginalMatrix[0].length * 35,copyOfOriginalMatrix.length * 45,400,200));
                 } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
-                    frame.setSize(1000, 1020);
+                    score.setBounds(new Rectangle(copyOfOriginalMatrix[0].length * 100,copyOfOriginalMatrix.length * 104,400,200));
                 } else
-                    frame.setSize(copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 104);
+                    score.setBounds(new Rectangle(copyOfOriginalMatrix[0].length * 60,copyOfOriginalMatrix.length * 110,100,100));
+
+                score.setForeground(Color.RED);
+                score.setFont(new Font("Monospaced", Font.BOLD,20));
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        frame.add(score);
+
+                        frame.add(application);
+
+                        frame.setVisible(true);
+                        frame.setResizable(false);
+                        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        if (copyOfOriginalMatrix == null) {
+                            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                        }
+
+                        if (copyOfOriginalMatrix[0].length > 20 || copyOfOriginalMatrix.length > 20) {
+                            System.out.println("The map is to big. Please provide a map with lines or/and columns no more then 20.");
+                            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                        } else if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
+                                (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
+                            frame.setSize(copyOfOriginalMatrix[0].length * 50, copyOfOriginalMatrix.length * 55);
+
+                        } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
+                            frame.setSize(1000, 1020);
+                        } else
+                            frame.setSize(copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 120);
+
+
+                        System.out.println("A  intrat !");
+
+
+                    }
+                });
+
+
             }
         });
 
-
     }
-
-
 }
