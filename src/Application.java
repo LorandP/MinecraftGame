@@ -33,8 +33,8 @@ public class Application extends JPanel implements KeyListener {
     private int left = 0;
     private int right = 0;
     private static int sheepCollected = 0;
-    private String imagePath = "/Users/lorand/IntellijProjects/MinecraftGame/MinecraftStuff/";
-    private String imagePath50Pixel = "/Users/lorand/IntellijProjects/MinecraftGame/MinecraftStuff/50Pixel/";
+    private String imagePath = "D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\";
+    private String imagePath50Pixel = "D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\50Pixel\\";
 
 
     private static JFrame frame = new JFrame();
@@ -61,22 +61,6 @@ public class Application extends JPanel implements KeyListener {
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        //score.setText("Sheep's teleported: "+sheepCollected);
-
-        //Dimension size = getPreferredSize();
-
-        //setPreferredSize(size);
-        //c.add(score,BorderLayout.SOUTH);
-
-        //add(score);
-
-        //add(application, BorderLayout.NORTH);
-
-       // setVisible(true);
-        //setResizable(false);
-        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
 
         copyOfOriginalMatrix = matrix();
 
@@ -110,13 +94,12 @@ public class Application extends JPanel implements KeyListener {
         Graphics2D graphics2D = (Graphics2D) g;
         String sheepsCollectedValueInString ="";
         sheepsCollectedValueInString = Integer.toString(sheepCollected);
-        System.out.println("Sheeps = "+sheepsCollectedValueInString);
         int numberOfSheeps = 0;
 
 
         BufferedImage backgroundImage = null;
         try {
-            backgroundImage = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MinecraftStuff/Minecraft5.jpg"));
+            backgroundImage = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\Minecraft5.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -125,7 +108,7 @@ public class Application extends JPanel implements KeyListener {
         /// Drawing the score at the bottom
         if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
                 (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
-            g.setFont(new Font("Bauhaus 93", Font.BOLD, 19));
+            g.setFont(new Font("Comic Sans MS", Font.PLAIN, 19));
             g.setColor(Color.RED);
             ((Graphics2D) g).drawString("Sheep's teleported: ",700,830);
             ((Graphics2D) g).drawString(sheepsCollectedValueInString,900,830);
@@ -135,19 +118,11 @@ public class Application extends JPanel implements KeyListener {
             ((Graphics2D) g).drawString(sheepsCollectedValueInString, copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 104);
             ((Graphics2D) g).drawString("Sheep's teleported: ",copyOfOriginalMatrix[0].length * 100,copyOfOriginalMatrix.length * 104);
         } else {
-            g.setFont(new Font("Bauhaus 93", Font.BOLD, 18));
+            g.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
             g.setColor(Color.RED);
             ((Graphics2D) g).drawString("Sheep's teleported: ", copyOfOriginalMatrix[0].length * 20, copyOfOriginalMatrix.length * 110);
             ((Graphics2D) g).drawString(sheepsCollectedValueInString, copyOfOriginalMatrix[0].length * 60, copyOfOriginalMatrix.length * 110);
         }
-
-
-
-        /// Drawing a time interval
-
-
-
-
 
 
 
@@ -241,7 +216,7 @@ public class Application extends JPanel implements KeyListener {
                     numberOfSheeps++;
             }
         }
-        System.out.println("nr of sheeps = "+numberOfSheeps);
+
 
         JLabel numOfSheeps = new JLabel();
         JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL,0,100);
@@ -272,7 +247,8 @@ public class Application extends JPanel implements KeyListener {
         });
         progressBarUpdate.run();
         */
-
+       // nfinal String collectionTime = "";
+        /*
         Timer timer = new Timer(500, new ActionListener() {
             int collectTime = 0;
             String collectionTime = Integer.toString(collectTime);
@@ -280,34 +256,32 @@ public class Application extends JPanel implements KeyListener {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Show TIMER");
                 collectTime++;
+                if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
+                        (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
+                    g.setFont(new Font("Bauhaus 93", Font.BOLD, 19));
+                    g.setColor(Color.RED);
+                    ((Graphics2D) g).drawString("Collection time: ",50,830);
+                    ((Graphics2D) g).drawString(collectionTime,100,830);
+                } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
+                    g.setFont(new Font("Bauhaus 93", Font.BOLD, 19));
+                    g.setColor(Color.RED);
+                    ((Graphics2D) g).drawString(collectionTime, copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 104);
+                    ((Graphics2D) g).drawString("Collection time: ",copyOfOriginalMatrix[0].length * 100,copyOfOriginalMatrix.length * 104);
+                } else {
+                    g.setFont(new Font("Bauhaus 93", Font.BOLD, 18));
+                    g.setColor(Color.RED);
+                    ((Graphics2D) g).drawString("Collection time: ", copyOfOriginalMatrix[0].length * 20, copyOfOriginalMatrix.length * 110);
+                    ((Graphics2D) g).drawString(collectionTime, copyOfOriginalMatrix[0].length * 60, copyOfOriginalMatrix.length * 110);
+                }
 
             }
 
-        });
-        timer.start();
-        if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
-                (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
-            g.setFont(new Font("Bauhaus 93", Font.BOLD, 19));
-            g.setColor(Color.RED);
-            ((Graphics2D) g).drawString("Collection time: ",50,830);
-            ((Graphics2D) g).drawString(collectionTime,100,830);
-        } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
-            g.setFont(new Font("Bauhaus 93", Font.BOLD, 19));
-            g.setColor(Color.RED);
-            ((Graphics2D) g).drawString(collectionTime, copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 104);
-            ((Graphics2D) g).drawString("Collection time: ",copyOfOriginalMatrix[0].length * 100,copyOfOriginalMatrix.length * 104);
-        } else {
-            g.setFont(new Font("Bauhaus 93", Font.BOLD, 18));
-            g.setColor(Color.RED);
-            ((Graphics2D) g).drawString("Collection time: ", copyOfOriginalMatrix[0].length * 20, copyOfOriginalMatrix.length * 110);
-            ((Graphics2D) g).drawString(collectionTime, copyOfOriginalMatrix[0].length * 60, copyOfOriginalMatrix.length * 110);
-        }
-
+        });*/
 
 
         if (numberOfSheeps == 0){
-            numOfSheeps.setBounds(new Rectangle(50,100,500,200));
-            numOfSheeps.setFont(new Font("Bauhaus 93", Font.BOLD,25));
+            numOfSheeps.setBounds(new Rectangle(50,100,600,200));
+            numOfSheeps.setFont(new Font("Comic Sans MS", Font.PLAIN,25));
             numOfSheeps.setForeground(Color.WHITE);
             numOfSheeps.setHorizontalAlignment(SwingConstants.CENTER);
             numOfSheeps.setText("<html><h1>Good job!</h1><br> You have teleported "+sheepCollected+" sheep's to your home planet!" +
@@ -347,7 +321,7 @@ public class Application extends JPanel implements KeyListener {
             }
             down = 0;
             if (up == 1){
-                copyOfOriginalMatrix[characterLinePosition + 1][characterColumnPosition] = 0;
+                copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
             }
             up = 0;
             if (right == 1){
@@ -407,7 +381,7 @@ public class Application extends JPanel implements KeyListener {
                 copyOfOriginalMatrix[characterLinePosition][characterColumnPosition - 1] = 1;
                 copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] = 0;
                 rectangleXAxis -= 100;
-                System.out.println(rectangleYAxis);
+               // System.out.println(rectangleYAxis);
             }
             if (characterColumnPosition - 1 >= 0 &&
                     copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
@@ -451,7 +425,7 @@ public class Application extends JPanel implements KeyListener {
                     copyOfOriginalMatrix[characterLinePosition - 1][characterColumnPosition] = 0;
                 }
                 up = 0;
-                System.out.println(rectangleYAxis);
+               // System.out.println(rectangleYAxis);
             }
             if (characterLinePosition + 1 < copyOfOriginalMatrix.length &&
                     copyOfOriginalMatrix[characterLinePosition][characterColumnPosition] == 1 &&
@@ -528,14 +502,14 @@ public class Application extends JPanel implements KeyListener {
     public int[][] matrix() {
         Scanner input = null;
         try {
-            input = new Scanner(new FileReader("/Users/lorand/IntellijProjects/MinecraftGame/Map1.txt"));
+            input = new Scanner(new FileReader("D:\\Projects InteliJ\\MInecraft2\\Map1.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
         Scanner input2 = null;
         try {
-            input2 = new Scanner(new FileReader("/Users/lorand/IntellijProjects/MinecraftGame/Map1.txt"));
+            input2 = new Scanner(new FileReader("D:\\Projects InteliJ\\MInecraft2\\Map1.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -559,7 +533,7 @@ public class Application extends JPanel implements KeyListener {
         //Marimea matricii
         System.out.println();
         if (characters % lines == 0) {
-            System.out.format("The size of the matrice is = %d x %d \n", characters / lines, lines);
+            System.out.format("The size of the map is = %d x %d \n", characters / lines, lines);
 
             //Reading into the matrice
             matrix = new int[lines][characters / lines];
@@ -660,7 +634,7 @@ public class Application extends JPanel implements KeyListener {
 
         BufferedImage backgroundImage = null;
         try {
-            backgroundImage = ImageIO.read(new File("/Users/lorand/IntellijProjects/MinecraftGame/MinecraftStuff/MinecraftPlanet3.jpg"));
+            backgroundImage = ImageIO.read(new File("D:\\Projects InteliJ\\MInecraft2\\MineCraftStuff\\MinecraftPlanet4.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -669,21 +643,24 @@ public class Application extends JPanel implements KeyListener {
 
         //tartupWindow startupWindow = new StartupWindow(backgroundImage);
         JLabel welcomeMessage = new JLabel("Welcome to mincraft world");
-        JLabel welcomeMessage2 = new JLabel("Choose the number of players");
-        welcomeMessage.setLocation(150,100);
+        JLabel information = new JLabel("<html>You'r people are out of food and clothing.<br> You have searched long and hard in the universe to find the right source of food and clothing" +
+                " but you have finally found a planet called Earth, inhabited by living creatures that we call sheep's that are just the right source.<br>" +
+                "Teleport them all back to your home planet. </html>");
+        welcomeMessage.setLocation(150,50);
         welcomeMessage.setSize(500,30);
         welcomeMessage.setForeground(Color.WHITE);
-        welcomeMessage.setFont(new Font("Monospaced", Font.BOLD,32));
-        welcomeMessage2.setLocation(200,150);
-        welcomeMessage2.setSize(500,50);
-        welcomeMessage2.setForeground(Color.WHITE);
-        welcomeMessage2.setFont(new Font("Monospaced", Font.BOLD,20));
+        welcomeMessage.setFont(new Font("Comic Sans MS", Font.BOLD,32));
+        information.setLocation(200,100);
+        information.setHorizontalAlignment(SwingConstants.LEFT);
+        information.setSize(500,200);
+        information.setForeground(Color.WHITE);
+        information.setFont(new Font("Comic Sans MS", Font.PLAIN,17));
 
         JButton onePlayer = new JButton("Play");
         JButton twoPlayers = new JButton("2 players");
         onePlayer.setSize(120,50);
-        onePlayer.setLocation(320,200);
-        onePlayer.setFont(new Font("Monospaced", Font.PLAIN, 18));
+        onePlayer.setLocation(320,300);
+        onePlayer.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
         twoPlayers.setSize(120,50);
         twoPlayers.setLocation(450,300);
 
@@ -694,7 +671,7 @@ public class Application extends JPanel implements KeyListener {
         frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame2.setSize(780,440);
         frame2.add(welcomeMessage);
-       // frame2.add(welcomeMessage2);
+        frame2.add(information);
         frame2.add(onePlayer);
         //frame2.add(twoPlayers);
 /*
@@ -731,32 +708,12 @@ public class Application extends JPanel implements KeyListener {
         onePlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Application application = new Application();
-
                 frame2.dispose();
-
-                //frame.setLayout(null);
-
-
-
-                System.out.println(sheepCollected);
-
-                if ((copyOfOriginalMatrix[0].length < 20 && copyOfOriginalMatrix[0].length > 9) ||
-                        (copyOfOriginalMatrix.length < 20 && copyOfOriginalMatrix.length > 9)) {
-                    score.setBounds(new Rectangle(copyOfOriginalMatrix[0].length * 35,copyOfOriginalMatrix.length * 45,400,200));
-                } else if (copyOfOriginalMatrix[0].length == 20 || copyOfOriginalMatrix.length == 20) {
-                    score.setBounds(new Rectangle(copyOfOriginalMatrix[0].length * 100,copyOfOriginalMatrix.length * 104,400,200));
-                } else
-                    score.setBounds(new Rectangle(copyOfOriginalMatrix[0].length * 60,copyOfOriginalMatrix.length * 110,100,100));
-
-                score.setForeground(Color.RED);
-                score.setFont(new Font("Monospaced", Font.BOLD,20));
 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-
-                        frame.add(score);
+                        Application application = new Application();
 
                         frame.add(application);
 
@@ -779,10 +736,6 @@ public class Application extends JPanel implements KeyListener {
                         } else
                             frame.setSize(copyOfOriginalMatrix[0].length * 100, copyOfOriginalMatrix.length * 120);
 
-
-                        System.out.println("A  intrat !");
-
-
                     }
                 });
 
@@ -792,3 +745,38 @@ public class Application extends JPanel implements KeyListener {
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
